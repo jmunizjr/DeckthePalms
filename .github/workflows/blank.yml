@@ -1,0 +1,247 @@
+import RPi.GPIO as io
+io.setmode(io.BCM)
+
+# Constant values,   
+PWM_MAX = 100
+
+# Disable warning from GPIO  
+io.setwarnings(False)  
+
+# The pins configuration for west, south, east, and north motors spinning direction  
+# where "False" equals climbing tree.  
+
+westMotor_DIR_pin = 7  
+io.setup(westMotor_DIR_pin, io.OUT)  
+ 
+southMotor_DIR_pin = 8  
+io.setup(southMotor_DIR_pin, io.OUT)
+
+eastMotor_DIR_pin = 22  
+io.setup(eastMotor_DIR_pin, io.OUT)  
+ 
+northMotor_DIR_pin = 23  
+io.setup(northMotor_DIR_pin, io.OUT)  
+
+io.output(westMotor_DIR_pin, False)  
+
+io.output(southMotor_DIR_pin, False)  
+
+io.output(eastMotor_DIR_pin, False)  
+
+io.output(northMotor_DIR_pin, False)  
+
+# Here we configure the GPIO settings for the west, south, east, and north motor's spinning speed via PWM.   
+
+westMotor_PWM_pin = 12  
+
+southMotor_PWM_pin = 25  
+
+eastMotor_PWM_pin = 17  
+
+northMotor_PWM_pin = 18  
+
+io.setup(westMotor_PWM_pin, io.OUT)  
+
+io.setup(southMotor_PWM_pin, io.OUT)
+
+io.setup(eastMotor_PWM_pin, io.OUT)  
+
+io.setup(northMotor_PWM_pin, io.OUT)  
+
+
+
+# MAX Frequency 20 Hz
+# Select a Duty Cycle from 0-100; PWM MAX can also be adjusted, with moderate performance
+
+westMotorPWM = io.PWM(westMotor_PWM_pin,20)  
+
+southMotorPWM = io.PWM(southMotor_PWM_pin,20)     
+
+eastMotorPWM = io.PWM(eastMotor_PWM_pin,20)  
+
+northMotorPWM = io.PWM(northMotor_PWM_pin,20)     
+
+westMotorPWM.start(0)  
+
+westMotorPWM.ChangeDutyCycle(1)  
+
+southMotorPWM.start(0)  
+
+southMotorPWM.ChangeDutyCycle(1)  
+
+eastMotorPWM.start(0)  
+
+eastMotorPWM.ChangeDutyCycle(1)  
+
+northMotorPWM.start(0)  
+
+northMotorPWM.ChangeDutyCycle(1)  
+
+westMotorPower = (0)  
+
+southMotorPower = (0)
+
+eastMotorPower = (0)  
+
+northMotorPower = (0)
+
+def getMotorPowers():  
+
+    return (westMotorPower,southMotorPower,eastMotorPower,northMotorPower)       
+
+def setMotorwest(power):
+    
+# SetMotorwest(power)  
+
+# Sets the drive level for the west motor, from +1 (max) to -1 (min).  
+
+# This is a short explanation for a better understanding:  
+# SetMotorwest(0)     -> west motor is stopped  
+# SetMotorwest(0.75)  -> west motor moving forward at 75% power  
+# SetMotorwest(-0.5)  -> west motor moving reverse at 50% power  
+# SetMotorwest(1)     -> west motor moving forward at 100% power  
+
+    if power < 0:  
+        # Reverse mode for the west motor  
+        io.output(westMotor_DIR_pin, False)  
+        pwm = -int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+    elif power > 0:  
+        # Forward mode for the west motor  
+        io.output(westMotor_DIR_pin, True)  
+        pwm = int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+
+    else:  
+        # Stop mode for the west motor  
+        io.output(westMotor_DIR_pin, False)  
+        pwm = 0  
+
+#   print "SetMotorwest", pwm  
+westMotorPower = pwm  
+westMotorPWM.ChangeDutyCycle(pwm)
+
+def setMotorsouth(power): 
+
+# SetMotorsouth(power)  
+
+# Sets the drive level for the south motor, from +1 (max) to -1 (min).  
+
+# This is a short explanation for a better understanding:  
+
+# SetMotorsouth(0)     -> south motor is stopped  
+# SetMotorsouth(0.75)  -> south motor moving forward at 75% power  
+# SetMotorsouth(-0.5)  -> south motor moving reverse at 50% power  
+# SetMotorsouth(1)     -> south motor moving forward at 100% power  
+
+    if power < 0:  
+
+        # Reverse mode for the south motor  
+        io.output(southMotor_DIR_pin, True)  
+        pwm = -int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+
+    elif power > 0:  
+        # Forward mode for the south motor  
+        io.output(southMotor_DIR_pin, False)  
+        pwm = int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+
+    else:  
+        # Stop mode for the south motor  
+        io.output(southMotor_DIR_pin, False)  
+        pwm = 0  
+
+    #   print "SetMotorsouth", pwm  
+southMotorPower = pwm  
+southMotorPWM.ChangeDutyCycle(pwm)
+    
+def setMotoreast(power):  
+
+# SetMotoreast(power)  
+
+# Sets the drive level for the east motor, from +1 (max) to -1 (min).  
+
+# This is a short explanation for a better understanding:  
+# SetMotoreast(0)     -> east motor is stopped  
+# SetMotoreast(0.75)  -> east motor moving forward at 75% power  
+# SetMotoreast(-0.5)  -> east motor moving reverse at 50% power  
+# SetMotoreast(1)     -> east motor moving forward at 100% power  
+
+    if power < 0:  
+        # Reverse mode for the east motor  
+        io.output(eastMotor_DIR_pin, False)  
+        pwm = -int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+    elif power > 0:  
+        # Forward mode for the east motor  
+        io.output(eastMotor_DIR_pin, True)  
+        pwm = int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+
+    else:  
+        # Stop mode for the east motor  
+        io.output(eastMotor_DIR_pin, False)  
+        pwm = 0  
+
+#   print "SetMotoreast", pwm  
+eastMotorPower = pwm  
+eastMotorPWM.ChangeDutyCycle(pwm)
+
+def setMotornorth(power): 
+
+# SetMotornorth(power)  
+
+# Sets the drive level for the north motor, from +1 (max) to -1 (min).  
+
+# This is a short explanation for a better understanding:  
+
+# SetMotornorth(0)     -> north motor is stopped  
+# SetMotornorth(0.75)  -> north motor moving forward at 75% power  
+# SetMotornorth(-0.5)  -> north motor moving reverse at 50% power  
+# SetMotornorth(1)     -> north motor moving forward at 100% power  
+
+    if power < 0:  
+
+        # Reverse mode for the north motor  
+        io.output(northMotor_DIR_pin, True)  
+        pwm = -int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+
+    elif power > 0:  
+        # Forward mode for the north motor  
+        io.output(northMotor_DIR_pin, False)  
+        pwm = int(PWM_MAX * power)  
+        if pwm > PWM_MAX:  
+            pwm = PWM_MAX  
+
+    else:  
+        # Stop mode for the north motor  
+        io.output(northMotor_DIR_pin, False)  
+        pwm = 0  
+
+#   print "SetMotornorth", pwm  
+northMotorPower = pwm  
+northMotorPWM.ChangeDutyCycle(pwm)  
+
+
+def exit():  
+
+# Program will clean up all GPIO settings and terminates  
+
+    io.output(westMotor_DIR_pin, False)  
+
+    io.output(southMotor_DIR_pin, False)  
+
+    io.output(eastMotor_DIR_pin, False)  
+
+    io.output(northMotor_DIR_pin, False)  
+
+    io.cleanup()
